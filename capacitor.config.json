@@ -2,10 +2,10 @@
   "appId": "app.thermalworkout.ios",
   "appName": "Thermal",
   "webDir": "www",
-  "backgroundColor": "#0c0f16",
+  "backgroundColor": "#07090d",
   "ios": {
     "contentInset": "never",
-    "backgroundColor": "#0c0f16",
+    "backgroundColor": "#07090d",
     "scrollEnabled": true,
     "preferredContentMode": "mobile"
   },

@@ -6,15 +6,16 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Thermal">
-<meta name="theme-color" content="#0c0f16">
+<meta name="theme-color" content="#07090d">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <title>Thermal — workout tracker</title>
 <style>
 :root{
-  --ink:#0c0f16; --surface:#141924; --raised:#1b2231; --line:#26304180;
-  --line-solid:#263041; --text:#e9eef7; --muted:#8998b0; --dim:#5d6b83;
+  --ink:#07090d; --surface:#0f141d; --raised:#1b2231; --line:#1a2230;
+  --line-solid:#263041; --text:#e9eef7; --muted:#8796ae; --dim:#7d8aa0;
+  --hud:#0b0f16;
   --amber:#ffb02e; --amber-dim:#7a5416; --cyan:#3fb6d8; --red:#e8425f;
   --ok:#49d69d;
   --pad:16px;
@@ -37,7 +38,7 @@ input{-webkit-appearance:none;appearance:none}
 .topbar{
   position:sticky;top:0;z-index:20;
   padding:calc(env(safe-area-inset-top) + 12px) var(--pad) 12px;
-  background:linear-gradient(180deg,var(--ink) 72%,#0c0f1600);
+  background:linear-gradient(180deg,var(--ink) 72%,#07090d00);
   display:flex;align-items:baseline;gap:10px;
 }
 .eyebrow{
@@ -54,7 +55,7 @@ h1{margin:0;font-size:26px;letter-spacing:-.02em;font-weight:800}
   position:fixed;left:0;right:0;bottom:0;z-index:40;
   display:grid;grid-template-columns:repeat(4,1fr);
   padding:8px 6px calc(env(safe-area-inset-bottom) + 8px);
-  background:#0e131cf2;backdrop-filter:blur(18px);
+  background:#0b0f16f2;backdrop-filter:blur(18px);
   border-top:1px solid var(--line);
 }
 .tabbar button{
@@ -97,8 +98,8 @@ h1{margin:0;font-size:26px;letter-spacing:-.02em;font-weight:800}
 /* ---------- body map ---------- */
 .bodywrap{display:flex;gap:0;justify-content:center;padding:4px 0 0}
 .bodywrap svg{width:50%;max-width:190px;height:auto;display:block}
-.skin{fill:#141a24}
-.muscle{fill:#1e2635;stroke:#0c0f16;stroke-width:2.5;stroke-linejoin:round;transition:fill .45s cubic-bezier(.4,0,.2,1)}
+.skin{fill:#131923}
+.muscle{fill:#1d2534;stroke:#07090d;stroke-width:2.5;stroke-linejoin:round;transition:fill .45s cubic-bezier(.4,0,.2,1)}
 .tappable .muscle{cursor:pointer}
 .tappable .muscle:active{opacity:.75}
 .viewlabels{display:flex;justify-content:center;gap:0;margin-top:2px}
@@ -311,6 +312,37 @@ b.under{color:var(--cyan)} b.on{color:var(--ok)} b.over{color:var(--amber)}
 .sumgrid .card.rec{border-color:#5a3d1a;background:#1d1912}
 .recrow{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
 .up{color:var(--ok)}
+/* ---------- Infrared look ---------- */
+.eyebrow{font-family:var(--mono);letter-spacing:.18em;color:var(--muted);font-weight:500}
+h1{font-size:30px}
+.card{border-radius:18px}
+.hud{position:relative;border-radius:20px;background-color:var(--hud);
+  background-image:
+    linear-gradient(var(--amber),var(--amber)),linear-gradient(var(--amber),var(--amber)),
+    linear-gradient(var(--amber),var(--amber)),linear-gradient(var(--amber),var(--amber)),
+    linear-gradient(var(--amber),var(--amber)),linear-gradient(var(--amber),var(--amber)),
+    linear-gradient(var(--amber),var(--amber)),linear-gradient(var(--amber),var(--amber)),
+    linear-gradient(#ffffff07 1px,transparent 1px),linear-gradient(90deg,#ffffff07 1px,transparent 1px);
+  background-size:14px 2px,2px 14px,14px 2px,2px 14px,14px 2px,2px 14px,14px 2px,2px 14px,22px 22px,22px 22px;
+  background-position:left 10px top 10px,left 10px top 10px,right 10px top 10px,right 10px top 10px,
+    left 10px bottom 10px,left 10px bottom 10px,right 10px bottom 10px,right 10px bottom 10px,0 0,0 0;
+  background-repeat:no-repeat,no-repeat,no-repeat,no-repeat,no-repeat,no-repeat,no-repeat,no-repeat,repeat,repeat;
+  padding:20px 16px 30px}
+.legend span{font-family:var(--mono)}
+.legend .ramp{background:linear-gradient(90deg,#24304a,#2f6f8c,#e0b240,#e8683a,#e8425f)}
+.rank .r .nm{color:var(--text);font-weight:600;font-size:13px}
+.rank .r .vl{font-family:var(--mono);color:#c4cede}
+.exdot.lit{box-shadow:0 0 10px currentColor}
+.tag.finish{background:var(--amber);color:#20160a;font-size:12px;font-weight:800;padding:9px 13px;border-radius:10px;letter-spacing:.1em}
+.setrow.current .stepper:first-of-type{border-color:var(--amber)}
+.setrow.current .stepper:first-of-type input{color:var(--amber)}
+.setrow.done.t-w .tick{background:#1d4d3b;border-color:#1d4d3b;color:var(--ok)}
+.resting{border-color:#ffb02e66;box-shadow:0 12px 34px #000000a0,0 0 30px #ffb02e22;overflow:hidden;border-radius:18px}
+.resting .t{font-size:30px;color:var(--amber)}
+.resting #rest-label{font-family:var(--sans);letter-spacing:.16em;font-weight:600}
+.resting .bar{height:3px;background:linear-gradient(90deg,#e8683a,var(--amber));border-radius:0}
+.resting .tag{font-size:12px;padding:9px 11px;border-radius:9px;letter-spacing:0;text-transform:none;color:#c4cede}
+.toast{border-radius:14px}
 </style>
 </head>
 <body>
@@ -788,7 +820,7 @@ function openDay(dayId){
     <div class="grow"><div class="eyebrow">${esc(plan.name)}</div><h1>${esc(day.name)}</h1></div>
   </div><div class="screen">`;
 
-  html += `<div class="card">${bodyMap(load,{id:'preview'})}
+  html += `<div class="card hud">${bodyMap(load,{id:'preview'})}
     <div class="legend"><span>Light</span><div class="ramp"></div><span>Heavy</span></div>
     <div class="rank">${ranked.slice(0,6).map(([k,v])=>`
       <div class="r"><div class="nm">${MUSCLES[k]}</div>
@@ -888,6 +920,11 @@ function nextUp(){
     if(s) return `Next: ${e.name} · ${fmt(s.weight)} ${S.unit} × ${s.reps}`;
   }
   return 'That was the last set. Finish when ready.';
+}
+function nextShort(){
+  const A = S.active; if(!A) return '';
+  for(const e of A.exercises){ const s = e.sets.find(x=>!x.done); if(s) return `${fmt(s.weight)} × ${s.reps}`; }
+  return '';
 }
 function startRest(sec){
   rest = {endsAt: Date.now() + sec*1000, total: sec, alerted:false};
@@ -994,7 +1031,7 @@ function paintRest(left){
   const done = left <= 0;
   const m = Math.floor(left/60), s = String(left%60).padStart(2,'0');
   el.querySelector('#rest-time').textContent = done ? 'Go' : `${m}:${s}`;
-  el.querySelector('#rest-label').textContent = done ? 'Rest over' : 'Rest';
+  el.querySelector('#rest-label').textContent = done ? 'REST OVER' : ('REST' + (nextShort() ? ' · NEXT ' + nextShort() : ''));
   el.querySelector('#rest-bar').style.width = (done ? 0 : 100*left/rest.total) + '%';
   el.style.borderColor = done ? 'var(--ok)' : '#2c3a4e';
 }
@@ -1034,6 +1071,7 @@ function progressionFor(ex){
   return {kind:'reps', to, text:`${target} reps on every set last time. Try <b>${to} reps</b>.`};
 }
 
+let currentSet = null;   // [exercise index, set index] of the next set to do
 function exCard(e, ei, load, maxL, inSS){
   const m = musclesFor(e.name);
   const prim = Object.entries(m).sort((a,b)=>b[1]-a[1])[0];
@@ -1041,7 +1079,7 @@ function exCard(e, ei, load, maxL, inSS){
   let n = 0;
   return `<div class="card ${inSS?'in-ss':''}" data-ex="${ei}">
     <div class="exhead">
-      <span class="exdot" style="background:${c}"></span>
+      <span class="exdot ${prim && load[prim[0]] ? 'lit' : ''}" style="background:${c};color:${c}"></span>
       <button class="grow exname" data-hist>
         <div class="title">${esc(e.name)}</div>
         <div class="sub">${topMuscles(e.name).join(' · ')||'Custom'} · rest ${fmtRest(e.rest||S.restDefault)}</div>
@@ -1055,7 +1093,7 @@ function exCard(e, ei, load, maxL, inSS){
     <div class="setrow head"><div>Set</div><div>${S.unit}</div><div>Reps</div><div></div></div>
     ${e.sets.map((s,si)=>`
       <div class="setwrap"><button class="setdel" data-del="${si}" tabindex="-1">Delete</button>
-      <div class="setrow ${s.done?'done':''} ${s.t?'t-'+s.t:''}" data-set="${si}">
+      <div class="setrow ${s.done?'done':''} ${s.t?'t-'+s.t:''} ${currentSet && currentSet[0]===ei && currentSet[1]===si ? 'current':''}" data-set="${si}">
         <button class="setno" data-type aria-label="${s.t?SET_NAME[s.t]:'Working set'}, tap to change">${s.t?SET_LABEL[s.t]:++n}</button>
         <div class="stepper">
           <button data-step="w" data-d="-1" aria-label="Less weight">−</button>
@@ -1097,7 +1135,7 @@ function renderSession(){
   let html = `<div class="topbar">
     <div class="grow"><div class="eyebrow"><span style="color:var(--ok)">●</span> In progress · ${mins}m</div>
     <h1>${esc(A.name)}</h1></div>
-    <button class="tag" data-finish style="background:var(--amber);color:#20160a">Finish</button>
+    <button class="tag finish" data-finish>Finish</button>
   </div><div class="screen">`;
 
   html += `<div class="card"><div class="stat">
@@ -1106,6 +1144,8 @@ function renderSession(){
     <div><div class="k">Time</div><div class="v">${mins}<span class="dim" style="font-size:13px">m</span></div></div>
   </div>${S.hintTypes ? '' : `<div class="hint">Tap a set number to mark it as a warm-up (W), drop set (D) or to failure (F). Swipe a set left to delete it. Warm-ups don't count toward heat or records.</div>`}</div>`;
 
+  currentSet = null;
+  for(let i=0;i<A.exercises.length && !currentSet;i++){ const j = A.exercises[i].sets.findIndex(x=>!x.done); if(j>=0) currentSet = [i,j]; }
   groupRuns(A.exercises).forEach(r=>{
     if(r.superset){
       html += `<div class="superset"><div class="ss-label">Superset · rest after ${esc(A.exercises[r.to-1].name)}</div>`;
@@ -1464,7 +1504,7 @@ function renderBody(){
     const ws = weeklySets(), keys = Object.keys(MUSCLES);
     const counts = {under:0, on:0, over:0};
     keys.forEach(k=> counts[weekStatus(ws[k]||0, targetFor(k))]++);
-    html += `<div class="card">${bodyMap({},{id:'heatmap'})}
+    html += `<div class="card hud">${bodyMap({},{id:'heatmap'})}
       <div class="legend"><span>None</span><div class="ramp"></div><span>At target max</span></div></div>
       <div class="card"><div class="stat">
         <div><div class="k">On target</div><div class="v" style="color:var(--ok)">${counts.on}</div></div>
@@ -1489,7 +1529,7 @@ function renderBody(){
     const fat = fatigueAt(Date.now());
     const tired = Object.entries(fat).filter(([,f])=>f>=FRESH).sort((a,b)=>b[1]-a[1]);
     const ready = Object.keys(MUSCLES).filter(k=>(fat[k]||0) < FRESH);
-    html += `<div class="card">${bodyMap({},{id:'heatmap'})}
+    html += `<div class="card hud">${bodyMap({},{id:'heatmap'})}
       <div class="legend"><span>Fresh</span><div class="ramp"></div><span>Fatigued</span></div></div>`;
     if(!tired.length){
       html += `<div class="empty"><b>Everything’s fresh</b>Nothing you’ve trained in the last few days is still recovering.</div>`;
@@ -1518,11 +1558,12 @@ function renderBody(){
     const max = Math.max(0.0001,...Object.values(load));
     const ranked = Object.entries(load).sort((a,b)=>b[1]-a[1]);
     const cold = Object.keys(MUSCLES).filter(k=>!load[k]);
+    html = html.replace('<h1>Body heat</h1></div>', `<h1>Body heat</h1></div><div class="num small muted" style="text-align:right;line-height:1.5">${recent.reduce((n,s)=>n+doneSets(s),0)} sets<br>${(recent.reduce((n,s)=>n+tonnage(s),0)/1000).toFixed(1)}k ${S.unit}</div>`);
     html += `<div class="chips">
         ${[[7,'7 days'],[14,'14 days'],[30,'30 days'],[9999,'All time']].map(([d,l])=>
           `<button class="chip ${bodyRange===d?'on':''}" data-range="${d}">${l}</button>`).join('')}
       </div>
-      <div class="card">
+      <div class="card hud">
         ${bodyMap(load,{id:'heatmap'})}
         <div class="legend"><span>Light</span><div class="ramp"></div><span>Heavy</span></div>
       </div>`;
@@ -1530,10 +1571,10 @@ function renderBody(){
       html += `<div class="empty"><b>Nothing logged yet</b>Finish a session and your muscles light up here.</div>`;
     }else{
       html += `<div class="card">
-        <div class="eyebrow" style="margin-bottom:12px">Sets per muscle · ${recent.length} session${recent.length===1?'':'s'}</div>
+        <div class="eyebrow" style="margin-bottom:12px">Sets per muscle · tap the body for detail</div>
         <div class="rank">${ranked.map(([k,v])=>`
           <div class="r"><div class="nm">${MUSCLES[k]}</div>
-          <div class="tr"><i style="width:${Math.round(100*v/max)}%;background:${heat(0.14+0.86*v/max)}"></i></div>
+          <div class="tr" style="overflow:visible"><i style="width:${Math.round(100*v/max)}%;background:${heat(0.14+0.86*v/max)};${v/max>.85?`box-shadow:0 0 12px ${heat(1)}80`:''}"></i></div>
           <div class="vl">${fmt(round1(v))}</div></div>`).join('')}</div>
       </div>`;
       if(cold.length) html += `<div class="card"><div class="eyebrow" style="margin-bottom:8px">Untouched</div>
@@ -1588,7 +1629,7 @@ function renderSummary(id){
       <div class="card"><div class="k">Volume</div><div class="v">${Math.round(tonnage(s)).toLocaleString()}<span class="dim" style="font-size:13px"> ${S.unit}</span></div></div>
       <div class="card ${recs.length?'rec':''}"><div class="k">Records</div><div class="v" style="${recs.length?'color:var(--amber)':''}">${recs.length}</div></div>
     </div>
-    <div class="card">${bodyMap(load,{id:'summap'})}</div>
+    <div class="card hud">${bodyMap(load,{id:'summap'})}</div>
     ${recs.length ? `<div class="card"><div class="eyebrow" style="margin-bottom:2px">Records</div>
       ${recs.map(r=>`<button class="recrow" style="width:100%;text-align:left" data-info="${esc(r.name)}"><span class="pr">PR</span>
         <span class="grow" style="font-weight:600;font-size:14px">${esc(r.name)}</span>
@@ -1616,8 +1657,8 @@ function renderSummary(id){
 /* ---------- share a workout as an image ----------
    Drawn as one SVG (body paths included), rasterised on a canvas, then handed
    to the share sheet. THEME holds the colours so a restyle changes it too. */
-const THEME = {ground:'#0c0f16', card:'#141924', text:'#e9eef7', muted:'#8998b0', accent:'#ffb02e',
-  ok:'#49d69d', base:'#1e2635', skin:'#141a24', font:"'Helvetica Neue', Helvetica, Arial, sans-serif"};
+const THEME = {ground:'#07090d', card:'#0f141d', text:'#e9eef7', muted:'#8796ae', accent:'#ffb02e',
+  ok:'#49d69d', base:'#1d2534', skin:'#131923', font:"'Helvetica Neue', Helvetica, Arial, sans-serif"};
 
 function bodyArt(levels, x, y, h){
   const sc = h / 1268; let out = '';

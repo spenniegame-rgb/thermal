@@ -10,7 +10,7 @@ coloured by how much volume lands on each one.
 site ID `e8196f2c-8c85-4174-8c80-2348691c41b0`)
 **iPhone app:** built by GitHub Actions → `Thermal.ipa` on the repo's `latest` release
 **Bundle ID:** `app.thermalworkout.ios` — never change it, or installs stop updating in place
-**Service worker cache:** `thermal-v5`
+**Service worker cache:** `thermal-v6`
 **State version:** 2
 **Last updated:** 28 October 2026
 
@@ -24,7 +24,7 @@ The user will attach `thermal.zip` (or the GitHub repo will be attached).
 unzip -oq thermal.zip -d thermal && cd thermal
 npm ci                       # only needed for Capacitor / the iOS project
 python3 -m http.server 8765 --directory www &
-node tools/test/e2e.js       # 76 end-to-end checks, headless Chromium
+node tools/test/e2e.js       # 94 end-to-end checks, headless Chromium
 ```
 
 The whole app is still **`www/index.html`** — one file, no build step, no
@@ -59,6 +59,7 @@ framework. The exercise library adds `www/library.json` and photos in `www/ex/`.
 | `tools/test/e2e.js` | Playwright end-to-end tests, including a stubbed Capacitor bridge. |
 | `tools/test/fixture-v1-backup.json` | A v1 backup (the user's original routine) used by the tests. |
 | `tools/icon/` | `icon.svg` (the icon, redrawn as vectors) and `render.js` for the 1024 icon + splash. |
+| `tools/body/` | `build-body.py` turns MuscleMap's anatomical artwork (`source-musclemap-male.json`, MIT — `LICENSE-MuscleMap.txt`) into the `/*BODY:BEGIN*/` table in `index.html`, mapped to Thermal's muscles. |
 | `capacitor.config.json` | App ID, name, `webDir: www`, status bar + notification config. |
 | `ios/` | Generated Capacitor Xcode project, customised: icon, dark splash, portrait only, dark mode, version 2.0. Uses Swift Package Manager (no CocoaPods). |
 | `.github/workflows/ios.yml` | Builds an unsigned `.ipa` on `macos-latest` and publishes it to the `latest` release. |
@@ -154,6 +155,16 @@ views), abductors as the outer hip/thigh (front) and glute medius (back).
 `github.com/yuhonas/free-exercise-db`; add `--no-images` to skip photos). The
 script rejects unknown muscles, unknown photo ids, and alias collisions.
 
+### The body map
+
+Anatomical male front/back artwork from github.com/melihcolpan/MuscleMap (MIT),
+mapped slug → muscle in `tools/body/build-body.py` (front deltoid region =
+side_delts with the frontDeltoid sub-region = front_delts; back upperBack = lats,
+rhomboids + rotator cuff = upper_back; hip flexors (TFL) on the front and an added
+glute-medius ellipse on the back = abductors; head, hands, knees, feet = skin).
+`paintLevels(root, {muscle: 0..1})` fills muscles and copies hot ones (≥ .5) into
+a blurred glow layer. `wireBodyTaps(root)` opens `muscleSheet(k)` on tap.
+
 ### Volume, heat, recovery
 
 - **Sets are the unit of stimulus.** One working set of lat pulldown adds 1.0 to
@@ -169,12 +180,24 @@ script rejects unknown muscles, unknown photo ids, and alias collisions.
 
 ## 5. Features and their decisions
 
+### Look — "Infrared" (chosen 28 Oct 2026)
+
+Near-black `#07090d`, surfaces `#0f141d`, hairlines `#1a2230`, amber `#ffb02e`
+accent, mono uppercase eyebrows, `.hud` cards (fine grid + amber corner brackets)
+around body maps, glowing hot muscles, amber current-set highlight and rest timer.
+`THEME` in `index.html` mirrors the colours for the share image. The other two
+directions considered (Volt, Lab) are on the "Thermal design directions" canvas.
+
 ### Tabs
 - **Train** — day cards; tap for preview (body map, ranked muscles, a "Still
   recovering" note if the day leans on muscles under 60% recovered, exercise list
   with supersets; tap an exercise for its info sheet).
-- **Body** — Heat (7/14/30/all days) and Recovery modes.
-- **Log** — sessions with PR badges; tap an exercise for history.
+- **Body** — Heat (7/14/30/all days), Recovery, and Weekly (sets in the last
+  7 days vs per-muscle target ranges, `TARGETS` defaults, `S.targets` overrides).
+- **Log** — sessions with PR badges; tap a session name for its summary, an
+  exercise for its history. Finishing a workout opens the summary
+  (`openSummary`, `route.view = 'sum:<id>'`) with a Share image button
+  (`summarySvg` → canvas PNG → share sheet).
 - **Plan** — days, exercises (supersets bracketed), units, default rest, bar
   weight, export/import, reset.
 
@@ -199,8 +222,16 @@ working set *i*; extra sets inherit the last. Only *ticked* sets are saved, so a
 warm-up you skipped doesn't return. Relies on `S.sessions` being newest-first
 (`finishSession` uses `unshift`).
 
+### Progression — `progressionFor(ex)`
+Double progression: the plan's reps are the top of the range. If every working
+set last time reached them at the top weight, suggest +2.5 kg / 5 lb (or +2 reps
+for bodyweight). Apply updates today's undone sets and the plan; × dismisses
+(`ex.noNudge`). Hidden once a working set is ticked.
+
 ### Records
-`e1rm(w,r)` = Epley. `prMap()` walks sessions oldest→newest; a session's
+`e1rm(w,r)` = Epley. Bodyweight sets (0 kg) are judged on reps instead
+(`bestReps`). `recordsBySession()` gives each session's records with the value
+they beat. `prMap()` walks sessions oldest→newest; a session's
 exercise is a PR if it beats every earlier session (first appearance isn't).
 Ticking a working set that beats your best shows an amber toast.
 
@@ -281,10 +312,6 @@ Not testable here: the real iOS build (CI is the check) and on-device behaviour.
 
 ## 9. Ideas not done yet
 
-- Weekly sets per muscle against target ranges (RP volume landmarks; Liftosaur
-  Week Stats). Agreed for round two.
-- Progression nudges (double progression: hit the top of the rep range on every
-  set → suggest more weight). Agreed for round two.
 - Lock-screen / Dynamic Island rest timer (Live Activity) and home-screen widgets
   — need a Swift widget extension. Agreed for round two.
 - Connect Netlify to the GitHub repo (push-to-deploy for the web app).
