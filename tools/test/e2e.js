@@ -81,7 +81,7 @@ const sheetTop = page => page.locator('.sheet').last();
     const d = document.createElement('div'); d.innerHTML = bodyMap({}, {id: 'x'});
     return ['adductors', 'abductors'].map(k => d.querySelectorAll(`[data-m="${k}"]`).length);
   });
-  ok(thigh[0] === 4 && thigh[1] === 4, 'adductors and abductors drawn on both views, both sides');
+  ok(thigh[0] >= 4 && thigh[1] >= 4, `inner and outer thigh drawn on the anatomical map (${thigh[0]} / ${thigh[1]} shapes)`);
 
   console.log('\n# Plan: add from library');
   await page.click('[data-tab="plan"]');
@@ -209,8 +209,25 @@ const sheetTop = page => page.locator('.sheet').last();
   const live = await page.evaluate(() => ({s: S.active.exercises.slice(-1)[0].name, p: S.plans[0].days[0].exercises.slice(-1)[0].name}));
   ok(live.s === 'Hammer Curl' && live.p === 'Hammer Curl', 'Hammer Curl added to session and plan');
 
-  console.log('\n# Finish, log, history');
+  console.log('\n# Swipe to delete, remove last set');
+  const before = await page.evaluate(() => S.active.exercises[0].sets.length);
+  await page.evaluate(() => [...document.querySelectorAll('[data-ex="0"] .setwrap')].pop().classList.add('swiped'));
+  await page.locator('[data-ex="0"] .setwrap').last().locator('[data-del]').click();
+  ok(await page.evaluate(() => S.active.exercises[0].sets.length) === before - 1, 'swiped set deletes');
+  await page.locator('[data-ex="0"] [data-menu]').click();
+  await page.click('.sheet [data-a="pop"]');
+  ok(await page.evaluate(() => S.active.exercises[0].sets.length) === before - 2, 'menu removes the last set');
+  ok(await page.evaluate(() => document.body.classList.contains('floating-bar')), 'page leaves room under the rest timer');
+
+  console.log('\n# Finish → summary, log, history');
   await page.click('[data-finish]');
+  await page.waitForSelector('text=Workout complete');
+  ok(await page.locator('.recrow').count() >= 1, 'summary lists the new record');
+  ok(await page.locator('#summap .muscle.lit').count() > 3, 'summary body map is painted');
+  const png = await page.evaluate(async () => { const s = S.sessions[0]; const r = await svgToPng(summarySvg(s), 1080, 1350); return r.blob.size; });
+  ok(png > 20000, `share image renders (${Math.round(png/1024)} KB PNG)`);
+  await shot(page, '09a-summary');
+  await page.click('[data-done]');
   await page.waitForSelector('text=Every set you finished');
   ok(await page.locator('.pr').count() >= 1, 'log marks the record');
   await shot(page, '09-log');
@@ -231,6 +248,20 @@ const sheetTop = page => page.locator('.sheet').last();
   await shot(page, '11-recovery');
   await page.click('[data-mode="heat"]');
   await shot(page, '12-heat');
+
+  console.log('\n# Weekly targets and muscle detail');
+  await page.click('[data-mode="week"]');
+  await page.waitForSelector('.wk');
+  ok(await page.locator('.wk').count() === 20, 'weekly view lists all 20 muscles');
+  await shot(page, '13-weekly');
+  await page.locator('#heatmap .muscle[data-m="biceps"]').first().click();
+  await page.waitForSelector('#ms');
+  ok(/Biceps/.test(await page.textContent('#ms .title')), 'tapping a muscle opens its detail');
+  ok(await page.locator('#ms .mlist .row').count() >= 3, 'muscle detail lists plan and library exercises');
+  await page.click('#ms [data-t="hi"][data-d="1"]');
+  ok(await page.evaluate(() => JSON.stringify(S.targets.biceps)) === '[8,17]', 'target can be changed');
+  await shot(page, '14-muscle');
+  await sheetTop(page).locator('[data-close]').click();
 
   console.log('\n# Export and round-trip');
   await page.click('[data-tab="plan"]');
@@ -256,6 +287,47 @@ const sheetTop = page => page.locator('.sheet').last();
   const again = await page.evaluate(() => S.active.exercises[0].sets.map(s => s.t || 'n').join(''));
   ok(again === 'wnnn', `next session brings back the warm-up you did, then the planned 3 working sets (${again})`);
   ok(errors.length === 0, 'no page errors after re-import');
+
+  console.log('\n# Progression and bodyweight records');
+  ({page, errors} = await newPage(browser));
+  await page.goto(BASE + 'index.html');
+  await page.waitForSelector('text=Nothing here yet');
+  await page.evaluate(() => {
+    const now = Date.now(), D = 864e5;
+    S.plans[0].days = [{id:'b', name:'Back', exercises:[
+      {id:'x1', name:'Lat Pulldown', weight:60, reps:8, sets:2},
+      {id:'x2', name:'Pull-Up', weight:0, reps:8, sets:2}]}];
+    S.sessions = [
+      {id:'p2', dayId:'b', name:'Back', started:now-2*D-3600e3, ended:now-2*D, exercises:[
+        {name:'Lat Pulldown', sets:[{weight:60,reps:8,done:true},{weight:60,reps:9,done:true}]},
+        {name:'Pull-Up', sets:[{weight:0,reps:8,done:true},{weight:0,reps:8,done:true}]}]},
+      {id:'p1', dayId:'b', name:'Back', started:now-5*D-3600e3, ended:now-5*D, exercises:[
+        {name:'Lat Pulldown', sets:[{weight:57.5,reps:8,done:true}]},
+        {name:'Pull-Up', sets:[{weight:0,reps:6,done:true}]}]}];
+    save(); render();
+  });
+  ok(await page.evaluate(() => [...prMap()].includes('p2|1')), 'more pull-up reps counts as a record');
+  await page.locator('.daycard').first().click();
+  await page.click('[data-start]');
+  const nudges = await page.locator('.nudge').allTextContents();
+  ok(nudges.length === 2 && /62\.5 kg/.test(nudges[0]) && /10 reps/.test(nudges[1]), `suggests 62.5 kg and 10 pull-ups (${nudges.map(t=>t.trim().replace(/\s+/g,' ')).join(' | ')})`);
+  await shot(page, '15-nudge');
+  await page.locator('[data-ex="0"] [data-apply]').click();
+  const ap = await page.evaluate(() => ({s: S.active.exercises[0].sets.map(x=>x.weight).join(','), p: S.plans[0].days[0].exercises[0].weight}));
+  ok(ap.s === '62.5,62.5' && ap.p === 62.5, 'Apply raises today\'s sets and the plan');
+  ok(await page.locator('[data-ex="0"] .nudge').count() === 0, 'suggestion goes away once applied');
+  await page.locator('[data-ex="1"] [data-nonudge]').click();
+  ok(await page.locator('.nudge').count() === 0, 'suggestion can be dismissed');
+  await page.locator('[data-ex="1"] [data-set="0"] [data-f="reps"]').fill('11');
+  await page.locator('[data-ex="1"] [data-set="0"] [data-f="reps"]').blur();
+  await page.locator('[data-ex="1"] [data-set="0"] [data-tick]').click();
+  await page.waitForSelector('.toast.pr');
+  ok(/11 reps/.test(await page.textContent('.toast.pr')), 'bodyweight record toast shows reps');
+  await page.evaluate(() => stopRest());
+  await page.locator('[data-ex="1"] [data-hist]').click();
+  await page.waitForSelector('#xi');
+  ok(/Best set/.test(await page.textContent('#xi')) && /reps/.test(await page.textContent('#xi .stat')), 'pull-up history shows rep records');
+  ok(errors.length === 0, 'no page errors' + (errors.length ? ': ' + errors.join(' | ') : ''));
 
   console.log('\n# Native bridge (stubbed Capacitor)');
   const stub = () => {

@@ -1,6 +1,6 @@
 /* Thermal service worker — app shell cached so the gym's dead wifi doesn't matter.
    Bump CACHE when you change index.html. */
-const CACHE = 'thermal-v5';
+const CACHE = 'thermal-v6';
 const SHELL = [
   './', './index.html', './manifest.json', './library.json',
   './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png'
