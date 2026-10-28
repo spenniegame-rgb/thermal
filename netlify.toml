@@ -1,0 +1,5 @@
+# For a GitHub-connected Netlify site. Headers also live in www/_headers so a
+# drag-and-drop deploy of the www folder gets them too.
+[build]
+  publish = "www"
+  command = ""

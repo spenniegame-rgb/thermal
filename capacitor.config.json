@@ -1,0 +1,16 @@
+{
+  "appId": "app.thermalworkout.ios",
+  "appName": "Thermal",
+  "webDir": "www",
+  "backgroundColor": "#0c0f16",
+  "ios": {
+    "contentInset": "never",
+    "backgroundColor": "#0c0f16",
+    "scrollEnabled": true,
+    "preferredContentMode": "mobile"
+  },
+  "plugins": {
+    "StatusBar": { "style": "DARK", "overlaysWebView": true },
+    "LocalNotifications": { "presentationOptions": ["sound"] }
+  }
+}

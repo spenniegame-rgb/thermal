@@ -1,0 +1,76 @@
+{
+  "kind": "thermal.backup",
+  "version": 1,
+  "exported": "2026-10-27T09:00:00.000Z",
+  "unit": "kg",
+  "restDefault": 90,
+  "plans": [
+    {
+      "id": "w1",
+      "name": "Workout 1",
+      "days": [
+        {
+          "id": "arms",
+          "name": "Arms",
+          "exercises": [
+            {"id": "a1", "name": "EZ-Bar Curls", "weight": 20, "reps": 11, "sets": 3},
+            {"id": "a2", "name": "Skullcrushers", "weight": 12.5, "reps": 12, "sets": 3},
+            {"id": "a3", "name": "Cable Curl", "weight": 13.75, "reps": 8, "sets": 3},
+            {"id": "a4", "name": "Cable Pushdown", "weight": 13.75, "reps": 10, "sets": 3},
+            {"id": "a5", "name": "Preacher Curl", "weight": 8, "reps": 10, "sets": 3},
+            {"id": "a6", "name": "Dips", "weight": 41, "reps": 8, "sets": 3}
+          ]
+        },
+        {
+          "id": "back",
+          "name": "Back",
+          "exercises": [
+            {"id": "b1", "name": "Machine Rows", "weight": 35, "reps": 10, "sets": 3},
+            {"id": "b2", "name": "Lat Pulldown", "weight": 60, "reps": 8, "sets": 3},
+            {"id": "b3", "name": "Chest Supported Row", "weight": 47, "reps": 8, "sets": 3},
+            {"id": "b4", "name": "Shrugs", "weight": 27.5, "reps": 12, "sets": 3},
+            {"id": "b5", "name": "Rear Delts", "weight": 18, "reps": 10, "sets": 3}
+          ]
+        },
+        {
+          "id": "chest",
+          "name": "Chest",
+          "exercises": [
+            {"id": "c1", "name": "Machine Press", "weight": 64, "reps": 8, "sets": 3},
+            {"id": "c2", "name": "Smith Machine Incline Press", "weight": 55, "reps": 9, "sets": 3},
+            {"id": "c3", "name": "Chest Fly", "weight": 41, "reps": 7, "sets": 3},
+            {"id": "c4", "name": "Shoulder Press", "weight": 10, "reps": 9, "sets": 3},
+            {"id": "c5", "name": "Shoulder Raise", "weight": 8, "reps": 12, "sets": 3}
+          ]
+        }
+      ]
+    }
+  ],
+  "sessions": [
+    {
+      "id": "s3", "dayId": "arms", "name": "Arms",
+      "started": 1761300000000, "ended": 1761303600000,
+      "exercises": [
+        {"name": "EZ-Bar Curls", "sets": [{"weight": 20, "reps": 12, "done": true}, {"weight": 20, "reps": 10, "done": true}, {"weight": 20, "reps": 9, "done": true}]},
+        {"name": "Skullcrushers", "sets": [{"weight": 12.5, "reps": 12, "done": true}, {"weight": 12.5, "reps": 11, "done": true}]},
+        {"name": "Dips", "sets": [{"weight": 41, "reps": 8, "done": true}]}
+      ]
+    },
+    {
+      "id": "s2", "dayId": "back", "name": "Back",
+      "started": 1761100000000, "ended": 1761103600000,
+      "exercises": [
+        {"name": "Lat Pulldown", "sets": [{"weight": 60, "reps": 8, "done": true}, {"weight": 60, "reps": 7, "done": true}]},
+        {"name": "Shrugs", "sets": [{"weight": 27.5, "reps": 12, "done": true}]}
+      ]
+    },
+    {
+      "id": "s1", "dayId": "arms", "name": "Arms",
+      "started": 1760700000000, "ended": 1760703600000,
+      "exercises": [
+        {"name": "EZ-Bar Curls", "sets": [{"weight": 20, "reps": 11, "done": true}, {"weight": 20, "reps": 9, "done": true}]},
+        {"name": "Skullcrushers", "sets": [{"weight": 12.5, "reps": 12, "done": true}]}
+      ]
+    }
+  ]
+}
