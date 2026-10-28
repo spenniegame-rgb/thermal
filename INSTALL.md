@@ -31,13 +31,7 @@ renew that automatically.
 **Mac**
 1. Install **Sideloadly** from **sideloadly.io**. (No iTunes needed.)
 
-### 2. On your iPhone
-
-1. **Settings → Privacy & Security → Developer Mode** → turn it on and let the
-   phone restart. (The option may only appear after step 3 below — if it's
-   missing, do step 3 first, then come back.)
-
-### 3. Install
+### 2. Install
 
 1. Download **Thermal.ipa** from the latest release:
    **https://github.com/spenniegame-rgb/thermal/releases/latest**
@@ -48,12 +42,15 @@ renew that automatically.
    as they are, and make sure **automatic refresh** is ticked if Sideloadly offers it.
 5. Click **Start**. Enter your Apple ID password and the code that appears on
    your phone.
-6. On the iPhone: **Settings → General → VPN & Device Management** → tap your
-   Apple ID → **Trust**.
-7. Open **Thermal**. The first time you tick a set, allow notifications so the
+6. On the iPhone, turn on **Developer Mode**: **Settings → Privacy & Security**,
+   scroll to the very bottom (under **Security**) → **Developer Mode** → on →
+   **Restart**, then tap **Turn On** after it restarts. The switch only appears
+   once an app like Thermal has been installed, so it won't be there before step 5.
+7. **Settings → General → VPN & Device Management** → tap your Apple ID → **Trust**.
+8. Open **Thermal**. The first time you tick a set, allow notifications so the
    rest timer can alert you.
 
-### 4. Keep it renewing automatically
+### 3. Keep it renewing automatically
 
 - **Windows:** with the phone plugged in, open **iTunes → the phone icon →
   Summary → Options → tick "Sync with this iPhone over Wi-Fi" → Apply**.

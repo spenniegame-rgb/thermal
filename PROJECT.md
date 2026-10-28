@@ -246,11 +246,13 @@ to Cache and opens the iOS share sheet; web: share sheet or download.
 - **Install:** Sideloadly (Windows needs the non-Microsoft-Store iTunes and
   iCloud). Free Apple ID → 7-day signature; Sideloadly's daemon auto-refreshes
   over Wi-Fi when "Sync with this iPhone over Wi-Fi" is on in iTunes and the PC is
-  awake on the same network. Developer Mode must be on; trust the Apple ID under
+  awake on the same network. Developer Mode must be on — the switch only appears
+  after the first sideloaded install, so install first. Trust the Apple ID under
   Settings → General → VPN & Device Management. Free accounts: 3 sideloaded apps,
   10 App IDs per 7 days.
 - **Updating keeps data** when installed over the existing app with the same
   Apple ID and bundle ID.
+- **Confirmed working on the user's iPhone (28 Oct 2026)** — build 1, Xcode 26.6.
 - Friends: the web app, or their own Sideloadly + Apple ID, or TestFlight with a
   paid account (needs signing in CI — not set up).
 
